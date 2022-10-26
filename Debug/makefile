@@ -12,8 +12,8 @@ RM := rm -rf
 -include Drivers/STM32L0xx_HAL_Driver/Src/subdir.mk
 -include Drivers/RingBuffer/subdir.mk
 -include Drivers/RTT_Debug/subdir.mk
--include Drivers/GSM/GSM_Hardware_Layer/subdir.mk
--include Drivers/GSM/GSM_Data_Layer/subdir.mk
+-include Drivers/GSM/gsm_utilities/subdir.mk
+-include Drivers/GSM/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include App/subdir.mk

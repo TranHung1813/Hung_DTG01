@@ -1,0 +1,4 @@
+gsm_data_layer.c:5:6:GSM_Config_Module	40	static
+gsm_data_layer.c:65:6:GSM_mnr_task	8	static
+gsm_data_layer.c:70:6:Polling_GSM_StateMachine	40	static
+gsm_data_layer.c:96:6:GSM_Manager_ChangeState	16	static

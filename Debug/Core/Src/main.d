@@ -31,8 +31,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/App/App_Main.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT_Conf.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/GSM_Data_Layer/ec200_data_layer.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/GSM_Hardware_Layer/ec200_hw_layer.h \
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h
 
 ../Core/Inc/main.h:
@@ -105,8 +104,6 @@ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/
 
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT_Conf.h:
 
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/GSM_Data_Layer/ec200_data_layer.h:
-
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/GSM_Hardware_Layer/ec200_hw_layer.h:
+C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm.h:
 
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h:

@@ -1,12 +1,16 @@
 
 #include "main.h"
 #include <stdlib.h>
+//#include "gsm.h"
+
+#define GSM_ATC_BUFFER_SIZE             256   // AT command buffer size
+
 
 typedef struct
 {
-    uint8_t data[100];
+    uint8_t u8Buffer[GSM_ATC_BUFFER_SIZE];
     uint16_t index;
-}SuperBuffer_t;
+} GSM_atc_Buffer_TypDef;
 
 typedef struct 
 {
@@ -22,6 +26,6 @@ typedef struct
 void RingBuffer_Init(RingBuffer_Types* ringbuffer, int BufferSize);
 uint8_t RingBuffer_Push(RingBuffer_Types* ringbuffer, uint8_t BytePush);
 uint8_t RingBuffer_Pop(RingBuffer_Types* ringbuffer);
-void RingBuffer_GetBuffer(SuperBuffer_t* retBuffer, RingBuffer_Types* ringbuffer);
+void RingBuffer_GetBuffer(GSM_atc_Buffer_TypDef* retBuffer, RingBuffer_Types* ringbuffer);
 int RingBuffer_GetNumberElements(RingBuffer_Types* ringbuffer);
 void Erase_RingBuffer(RingBuffer_Types* ringbuffer);

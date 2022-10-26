@@ -5,16 +5,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Drivers/RingBuffer/ringbuffer.c 
+../Drivers/GSM/gsm_utilities/gsm_utilities.c 
 
 OBJS += \
-./Drivers/RingBuffer/ringbuffer.o 
+./Drivers/GSM/gsm_utilities/gsm_utilities.o 
 
 C_DEPS += \
-./Drivers/RingBuffer/ringbuffer.d 
+./Drivers/GSM/gsm_utilities/gsm_utilities.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Drivers/RingBuffer/%.o: ../Drivers/RingBuffer/%.c Drivers/RingBuffer/subdir.mk
+Drivers/GSM/gsm_utilities/%.o: ../Drivers/GSM/gsm_utilities/%.c Drivers/GSM/gsm_utilities/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L071xx -c -I../Core/Inc -I../Drivers/STM32L0xx_HAL_Driver/Inc -I../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/Administrator/Desktop/Stm32 Projects/Hung_DTG01_Git/App" -I"C:/Users/Administrator/Desktop/Stm32 Projects/Hung_DTG01_Git/Drivers/RTT_Debug" -I"C:/Users/Administrator/Desktop/Stm32 Projects/Hung_DTG01_Git/Drivers/RingBuffer" -I"C:/Users/Administrator/Desktop/Stm32 Projects/Hung_DTG01_Git/Drivers/GSM" -I"C:/Users/Administrator/Desktop/Stm32 Projects/Hung_DTG01_Git/Drivers/GSM/gsm_utilities" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 

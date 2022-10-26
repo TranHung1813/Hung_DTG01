@@ -23,8 +23,8 @@ SUBDIRS := \
 App \
 Core/Src \
 Core/Startup \
-Drivers/GSM/GSM_Data_Layer \
-Drivers/GSM/GSM_Hardware_Layer \
+Drivers/GSM \
+Drivers/GSM/gsm_utilities \
 Drivers/RTT_Debug \
 Drivers/RingBuffer \
 Drivers/STM32L0xx_HAL_Driver/Src \

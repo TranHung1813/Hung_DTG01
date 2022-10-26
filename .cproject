@@ -48,8 +48,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/App}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/RTT_Debug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/RingBuffer}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/GSM/GSM_Data_Layer}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/GSM/GSM_Hardware_Layer}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/GSM}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/GSM/gsm_utilities}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1964184240" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
