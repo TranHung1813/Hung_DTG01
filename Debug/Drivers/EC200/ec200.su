@@ -1,0 +1,5 @@
+ec200.c:9:6:EC200_Turn_on_Power	8	static
+ec200.c:32:6:EC200_Turn_off_Power	8	static
+ec200.c:46:9:EC200_CompareByteData	40	static
+ec200.c:76:9:EC200_SendCommand_AT	24	static
+ec200.c:96:9:EC200_WaitResponse	32	static

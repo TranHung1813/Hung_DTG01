@@ -1,0 +1,6 @@
+ringbuffer.c:4:6:RingBuffer_Init	16	static
+ringbuffer.c:13:9:RingBuffer_Push	16	static
+ringbuffer.c:33:9:RingBuffer_Pop	24	static
+ringbuffer.c:52:6:RingBuffer_GetBuffer	24	static
+ringbuffer.c:67:5:RingBuffer_GetNumberElements	24	static
+ringbuffer.c:81:6:Erase_RingBuffer	16	static
