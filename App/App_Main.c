@@ -13,26 +13,26 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	HAL_UART_Receive_IT(&huart1, &data, 1);
 }
 
-void UART_SendData(USART_TypeDef * uart, uint8_t *pTxBuffer, uint32_t length)
-{
-	for(uint32_t CountByte = 0; CountByte < length; CountByte++)
-	{
-		while((uart-> ISR & USART_ISR_TXE_Msk) == 0); // doi thanh ghi Data Empty
-		uart ->TDR = (uint8_t)(*pTxBuffer & 0xFF);
-		pTxBuffer++;
-	}
-	while (!(uart ->ISR & USART_ISR_TC_Msk)); // doi TC set
-}
-void UART_ReceiveData(USART_TypeDef * uart, uint8_t *pRxBuffer, uint32_t length)
-{
-	for(uint32_t CountByte = 0; CountByte < length; CountByte++)
-	{
-		while((uart->ISR & USART_ISR_RXNE_Msk) == 0); // doi RXNE set
-		*pRxBuffer = (uint8_t)(uart->RDR & 0xFF);
-		pRxBuffer++;
-		//m_rx_buff.index++;
-	}
-}
+//void UART_SendData(USART_TypeDef * uart, uint8_t *pTxBuffer, uint32_t length)
+//{
+//	for(uint32_t CountByte = 0; CountByte < length; CountByte++)
+//	{
+//		while((uart-> ISR & USART_ISR_TXE_Msk) == 0); // doi thanh ghi Data Empty
+//		uart ->TDR = (uint8_t)(*pTxBuffer & 0xFF);
+//		pTxBuffer++;
+//	}
+//	while (!(uart ->ISR & USART_ISR_TC_Msk)); // doi TC set
+//}
+//void UART_ReceiveData(USART_TypeDef * uart, uint8_t *pRxBuffer, uint32_t length)
+//{
+//	for(uint32_t CountByte = 0; CountByte < length; CountByte++)
+//	{
+//		while((uart->ISR & USART_ISR_RXNE_Msk) == 0); // doi RXNE set
+//		*pRxBuffer = (uint8_t)(uart->RDR & 0xFF);
+//		pRxBuffer++;
+//		//m_rx_buff.index++;
+//	}
+//}
 void App_Main ()
 {
 

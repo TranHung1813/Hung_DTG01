@@ -1,4 +1,2 @@
 App_Main.c:8:6:HAL_UART_RxCpltCallback	16	static
-App_Main.c:16:6:UART_SendData	32	static
-App_Main.c:26:6:UART_ReceiveData	32	static
 App_Main.c:36:6:App_Main	8	static

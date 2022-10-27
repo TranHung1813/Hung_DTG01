@@ -48,24 +48,22 @@ void GSM_Hardware_Layer_Run(void)
 		else
 		{
 			SEGGER_RTT_printf(0,"Retry send ATC %d.\r\n",m_gsm_atc.atc.Retry_Count_atc);
+			SEGGER_RTT_printf(0,"%d\r\n",m_gsm_atc.atc.Recv_Buffer.index);
+			for(int Count=1; Count < m_gsm_atc.atc.Recv_Buffer.index; Count++)
+			{
+				SEGGER_RTT_printf(0,"%c",(char)m_gsm_atc.atc.Recv_Buffer.u8Buffer[Count]);
+			}
+			SEGGER_RTT_printf(0,"\r\n");
 			m_gsm_atc.atc.Last_time_send_atc_ms = sys_get_tick_ms();
+			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 			HAL_UART_Transmit(&huart1, (uint8_t*) m_gsm_atc.atc.cmd, strlen(m_gsm_atc.atc.cmd), 200);
 		}
 	}
 	RingBuffer_GetBuffer(&m_gsm_atc.atc.Recv_Buffer,&Rx_Buffer);
-	SEGGER_RTT_printf(0,"%d\r\n",m_gsm_atc.atc.Recv_Buffer.index);
-	for(int Count=1; Count < m_gsm_atc.atc.Recv_Buffer.index; Count++)
-	{
-		SEGGER_RTT_printf(0,"%c",(char)m_gsm_atc.atc.Recv_Buffer.u8Buffer[Count]);
-	}
-	SEGGER_RTT_printf(0,"\r\n");
-	uint8_t a = strstr((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.expect_resp);
-	uint8_t b = strstr("absbsbdsdOK\r\n",m_gsm_atc.atc.expect_resp);
-	if(m_gsm_atc.atc.expect_resp && a)
-	//if(m_gsm_atc.atc.expect_resp && strstr((char*)"aOK\r\n", m_gsm_atc.atc.expect_resp))
+	if(strlen(m_gsm_atc.atc.expect_resp) && strstr((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.expect_resp))
 	{
 		bool do_callback = true;
-		if(m_gsm_atc.atc.expected_response_at_the_end)
+		if(m_gsm_atc.atc.expected_response_at_the_end && strlen(m_gsm_atc.atc.expected_response_at_the_end))
 		{
 			Expect_len_compare = strlen(m_gsm_atc.atc.expected_response_at_the_end);
 			Current_Response_len = strlen((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer);
@@ -97,10 +95,10 @@ void GSM_Hardware_Layer_Run(void)
 		}
 
 	}
-	else if(m_gsm_atc.atc.expect_error && strstr((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.expect_error))
+	else if(strlen(m_gsm_atc.atc.expect_error) && strstr((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.expect_error))
 	{
 		bool do_callback = true;
-		if(m_gsm_atc.atc.expect_error_at_the_end)
+		if(m_gsm_atc.atc.expect_error_at_the_end && strlen(m_gsm_atc.atc.expect_error_at_the_end))
 		{
 			Expect_len_compare_error_handle = strlen(m_gsm_atc.atc.expect_error_at_the_end);
 			Current_Response_len_error_handle = strlen((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer);
@@ -109,6 +107,7 @@ void GSM_Hardware_Layer_Run(void)
 				p_compare_end_str_error_handle = &m_gsm_atc.atc.Recv_Buffer.u8Buffer[Current_Response_len_error_handle - Expect_len_compare_error_handle];
 				if(memcmp(p_compare_end_str_error_handle,m_gsm_atc.atc.expect_error_at_the_end,Expect_len_compare_error_handle))
 				{
+					// Compare thành công đuôi Response (trường hợp Response Error)
 					do_callback = true;
 				}
 				else
@@ -189,6 +188,7 @@ void GSM_SendCommand_AT (char* cmd,
 {
 	if(Timeout == 0 || Callback == NULL)
 	{
+		memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 		HAL_UART_Transmit(&huart1, (uint8_t *)cmd, strlen(cmd), 200);
 		return;
 	}
