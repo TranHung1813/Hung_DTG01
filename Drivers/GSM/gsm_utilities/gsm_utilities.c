@@ -29,3 +29,10 @@ void SEGGER_RTT_PrintBuffer(uint8_t* Buffer, int Buffer_len)
     }
     SEGGER_RTT_printf(0,"\r\n");
 }
+void SEGGER_RTT_PrintResult_ATC(char* cmd, char* result)
+{
+    // In ket qua: "AT cmd: OK/FAIL " trong debug
+    char sub_cmd[64] = "";
+    strncpy(sub_cmd, cmd + 0, strlen(cmd) - 2);
+    SEGGER_RTT_printf(0,"%s : %s\r\n", sub_cmd, result);
+}

@@ -16,5 +16,6 @@
 void GSM_Utilities_Get_IMEI(uint8_t *recv_Buffer, uint8_t* IMEI_Buffer, uint8_t Max_IMEI_Length);
 
 void SEGGER_RTT_PrintBuffer(uint8_t* Buffer, int Buffer_len);
+void SEGGER_RTT_PrintResult_ATC(char* cmd, char* result);
 
 #endif // GSM_UTILITIES_H

@@ -40,6 +40,7 @@ void GSM_Hardware_Layer_Run(void)
 			m_gsm_atc.atc.Timeout_atc_ms = 0;
 			if(m_gsm_atc.atc.Send_at_Callback != NULL)
 			{
+				SEGGER_RTT_PrintResult_ATC(m_gsm_atc.atc.cmd,"[TIMEOUT]");
 				m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_TIMEOUT,NULL);
 			}
 			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
@@ -82,10 +83,10 @@ void GSM_Hardware_Layer_Run(void)
 		}
 		if(do_callback == true)
 		{
-			//m_gsm_atc.atc.Last_time_send_atc_ms = 0;
 			m_gsm_atc.atc.Timeout_atc_ms = 0;
 			m_gsm_atc.atc.Retry_Count_atc = 0;
-            //SEGGER_RTT_PrintBuffer(m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.Recv_Buffer.index);
+            SEGGER_RTT_PrintBuffer(m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.Recv_Buffer.index);
+			SEGGER_RTT_PrintResult_ATC(m_gsm_atc.atc.cmd,"[OK]");
 			m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_OK,m_gsm_atc.atc.Recv_Buffer.u8Buffer);
 			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 		}
@@ -121,6 +122,7 @@ void GSM_Hardware_Layer_Run(void)
 			m_gsm_atc.atc.Last_time_send_atc_ms = 0;
 			m_gsm_atc.atc.Timeout_atc_ms = 0;
 			m_gsm_atc.atc.Retry_Count_atc = 0;
+			SEGGER_RTT_PrintResult_ATC(m_gsm_atc.atc.cmd,"[ERROR]");
 			m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_ERROR,m_gsm_atc.atc.Recv_Buffer.u8Buffer);
 			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 		}
@@ -174,36 +176,30 @@ void GSM_Turn_on_Power(void)
 		break;
 	}
 }
-void GSM_SendCommand_AT (char* cmd,
-						 char* expect_resp,
-						 char* expect_resp_at_the_end,
-						 char* expect_error,
-						 char* expect_error_at_the_end,
-						 uint32_t Timeout, uint8_t RetryCount,
-						 GSM_Send_at_CallBack_TypDef Callback)
+void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd)
 {
-	if(Timeout == 0 || Callback == NULL)
+	if(AT_Cmd.Timeout_atc_ms == 0 || AT_Cmd.Send_at_Callback == NULL)
 	{
 		memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
-		HAL_UART_Transmit(&huart1, (uint8_t *)cmd, strlen(cmd), 200);
+		HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 		return;
 	}
-	if(strlen(cmd) < 64)
+	if(strlen(AT_Cmd.cmd) < 64)
 	{
 
 	}
-	m_gsm_atc.atc.cmd = cmd;
-	m_gsm_atc.atc.expect_resp = expect_resp;
-	m_gsm_atc.atc.expected_response_at_the_end = expect_resp_at_the_end;
-	m_gsm_atc.atc.expect_error = expect_error;
-	m_gsm_atc.atc.expect_error_at_the_end = expect_error_at_the_end;
-	m_gsm_atc.atc.Timeout_atc_ms = Timeout;
+	m_gsm_atc.atc.cmd = AT_Cmd.cmd;
+	m_gsm_atc.atc.expect_resp = AT_Cmd.expect_resp;
+	m_gsm_atc.atc.expected_response_at_the_end = AT_Cmd.expected_response_at_the_end;
+	m_gsm_atc.atc.expect_error = AT_Cmd.expect_error;
+	m_gsm_atc.atc.expect_error_at_the_end = AT_Cmd.expect_error_at_the_end;
+	m_gsm_atc.atc.Timeout_atc_ms = AT_Cmd.Timeout_atc_ms;
 	m_gsm_atc.atc.Last_time_send_atc_ms = sys_get_tick_ms();
-	m_gsm_atc.atc.Retry_Count_atc = RetryCount;
-	m_gsm_atc.atc.Send_at_Callback = Callback;
+	m_gsm_atc.atc.Retry_Count_atc = AT_Cmd.Retry_Count_atc;
+	m_gsm_atc.atc.Send_at_Callback = AT_Cmd.Send_at_Callback;
 
 	memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
-	HAL_UART_Transmit(&huart1, (uint8_t *)cmd, strlen(cmd), 200);
+	HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 
 }
 uint32_t sys_get_tick_ms(void)

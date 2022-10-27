@@ -7,17 +7,15 @@
 #include "string.h"
 #include "gsm_utilities.h"
 
-#define EC200_MAX_TIMEOUT_WAIT_REPS  50
-#define EC200_TIME_TO_CHECK_REPS     10
-#define EC200_COUNT_TIME_RETRY_SEND  3
 #define E_OK     1
 #define E_NOT_OK 0
-
+#define MAX_ATC_TABLE_ROW  25
 typedef enum
 {
     GSM_STATE_POWER_ON = 0,
     GSM_STATE_RESET = 1,
-    GSM_STATE_CONFIG_DONE,
+    GSM_STATE_OK,
+
 }Gsm_State_TypDef;
 typedef struct 
 {
@@ -51,9 +49,16 @@ typedef struct
 
 typedef struct
 {
-	GSM_AT_Command_TypDef Table[25];
-	uint8_t Table_index;
-}GSM_ATCommand_Table_TypDef;
+    char *cmd;
+    char *expect_resp;
+    char *expected_response_at_the_end;
+    char *expect_error;
+    char *expect_error_at_the_end;
+    uint32_t Timeout_atc_ms;
+    uint8_t Retry_Count_atc;
+    GSM_Send_at_CallBack_TypDef Send_at_Callback;
+} GSM_ATCommand_Table_TypDef;
+
 typedef struct
 {
     GSM_AT_Command_TypDef atc;
@@ -61,13 +66,7 @@ typedef struct
 
 void GMS_Hardware_Init(void);
 void GSM_Turn_on_Power(void);
-void GSM_SendCommand_AT (char* cmd,
-						 char* expect_resp,
-						 char* expect_resp_at_the_end,
-						 char* expect_error,
-						 char* expect_error_at_the_end,
-						 uint32_t Timeout, uint8_t RetryCount,
-						 GSM_Send_at_CallBack_TypDef Callback);
+void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd);
 
 void GSM_mnr_task(void);
 void Polling_GSM_StateMachine (void);

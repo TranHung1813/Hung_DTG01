@@ -1,2 +1,3 @@
 gsm_utilities.c:3:6:GSM_Utilities_Get_IMEI	32	static
 gsm_utilities.c:24:6:SEGGER_RTT_PrintBuffer	24	static
+gsm_utilities.c:32:6:SEGGER_RTT_PrintResult_ATC	88	static
