@@ -1,3 +1,5 @@
+#ifndef RINGBUFFER_H
+#define RINGBUFFER_H
 
 #include "main.h"
 #include <stdlib.h>
@@ -29,3 +31,6 @@ uint8_t RingBuffer_Pop(RingBuffer_Types* ringbuffer);
 void RingBuffer_GetBuffer(GSM_atc_Buffer_TypDef* retBuffer, RingBuffer_Types* ringbuffer);
 int RingBuffer_GetNumberElements(RingBuffer_Types* ringbuffer);
 void Erase_RingBuffer(RingBuffer_Types* ringbuffer);
+
+
+#endif // RINGBUFFER_H

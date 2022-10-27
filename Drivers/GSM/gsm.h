@@ -1,7 +1,11 @@
+#ifndef GSM_H
+#define GSM_H
+
 #include "main.h"
 #include "ringbuffer.h"
-#include "SEGGER_RTT.h"
 #include "stdbool.h"
+#include "string.h"
+#include "gsm_utilities.h"
 
 #define EC200_MAX_TIMEOUT_WAIT_REPS  50
 #define EC200_TIME_TO_CHECK_REPS     10
@@ -47,6 +51,11 @@ typedef struct
 
 typedef struct
 {
+	GSM_AT_Command_TypDef Table[25];
+	uint8_t Table_index;
+}GSM_ATCommand_Table_TypDef;
+typedef struct
+{
     GSM_AT_Command_TypDef atc;
 } GSM_Hardware_atc_TypDef;
 
@@ -66,4 +75,7 @@ void GSM_Manager_ChangeState(uint8_t state);
 void GSM_Hardware_Layer_Run(void);
 
 void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer);
+
 uint32_t sys_get_tick_ms(void);
+
+#endif // GSM_H

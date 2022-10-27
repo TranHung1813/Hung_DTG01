@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "app_main.h": "c",
-        "ec200_data_layer.h": "c"
+        "ec200_data_layer.h": "c",
+        "gsm_utilities.h": "c"
     }
 }

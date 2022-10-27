@@ -30,7 +30,8 @@ App/App_Main.o: ../App/App_Main.c ../App/App_Main.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr_ex.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h \
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm_utilities/gsm_utilities.h
 
 ../App/App_Main.h:
 
@@ -99,3 +100,5 @@ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm.h:
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h:
 
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h:
+
+C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm_utilities/gsm_utilities.h:

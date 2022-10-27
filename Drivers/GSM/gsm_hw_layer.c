@@ -1,5 +1,4 @@
 #include "gsm.h"
-#include "string.h"
 
 #define EC200_SEND(huart,DataSend,length)  HAL_UART_Transmit(huart,DataSend,length,200)
 
@@ -49,11 +48,7 @@ void GSM_Hardware_Layer_Run(void)
 		{
 			SEGGER_RTT_printf(0,"Retry send ATC %d.\r\n",m_gsm_atc.atc.Retry_Count_atc);
 			SEGGER_RTT_printf(0,"%d\r\n",m_gsm_atc.atc.Recv_Buffer.index);
-			for(int Count=1; Count < m_gsm_atc.atc.Recv_Buffer.index; Count++)
-			{
-				SEGGER_RTT_printf(0,"%c",(char)m_gsm_atc.atc.Recv_Buffer.u8Buffer[Count]);
-			}
-			SEGGER_RTT_printf(0,"\r\n");
+			SEGGER_RTT_PrintBuffer(m_gsm_atc.atc.Recv_Buffer.u8Buffer,m_gsm_atc.atc.Recv_Buffer.index);
 			m_gsm_atc.atc.Last_time_send_atc_ms = sys_get_tick_ms();
 			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 			HAL_UART_Transmit(&huart1, (uint8_t*) m_gsm_atc.atc.cmd, strlen(m_gsm_atc.atc.cmd), 200);
@@ -90,6 +85,7 @@ void GSM_Hardware_Layer_Run(void)
 			//m_gsm_atc.atc.Last_time_send_atc_ms = 0;
 			m_gsm_atc.atc.Timeout_atc_ms = 0;
 			m_gsm_atc.atc.Retry_Count_atc = 0;
+            //SEGGER_RTT_PrintBuffer(m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.Recv_Buffer.index);
 			m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_OK,m_gsm_atc.atc.Recv_Buffer.u8Buffer);
 			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 		}
@@ -206,6 +202,7 @@ void GSM_SendCommand_AT (char* cmd,
 	m_gsm_atc.atc.Retry_Count_atc = RetryCount;
 	m_gsm_atc.atc.Send_at_Callback = Callback;
 
+	memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
 	HAL_UART_Transmit(&huart1, (uint8_t *)cmd, strlen(cmd), 200);
 
 }
