@@ -1,7 +1,7 @@
 # include "gsm.h"
 
 Gsm_Manager_TypDef GSM_Manager;
-GSM_ATCommand_Table_TypDef atc_table_config_module[] =
+const GSM_ATCommand_Table_TypDef atc_table_config_module[] =
 {
     {"ATV1\r\n", "OK\r\n", "", "ERROR", "", 3000, 5, GSM_Config_Module}, // Set TA Response Format (OK/'0')
     {"ATE0\r\n", "OK\r\n", "", "ERROR", "", 3000, 3, GSM_Config_Module}, //Disable ECHO
@@ -36,10 +36,9 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
     uint8_t TableSize = sizeof(atc_table_config_module)/sizeof(atc_table_config_module[0]);
     if(TableIndex >= TableSize)
     {
-        // GSM ready, switch to PPP mode
-        SEGGER_RTT_printf(0, "Config Module DONE!");
         return;
     }
+    SEGGER_RTT_PrintResult_ATC(atc_table_config_module[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
     GSM_SendCommand_AT(atc_table_config_module[TableIndex]);
     GSM_Manager.step++;
 }
