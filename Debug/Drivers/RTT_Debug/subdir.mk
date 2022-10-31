@@ -6,7 +6,8 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Drivers/RTT_Debug/SEGGER_RTT.c \
-../Drivers/RTT_Debug/SEGGER_RTT_printf.c 
+../Drivers/RTT_Debug/SEGGER_RTT_printf.c \
+../Drivers/RTT_Debug/app_debug.c 
 
 S_UPPER_SRCS += \
 ../Drivers/RTT_Debug/SEGGER_RTT_ASM_ARMv7M.S 
@@ -14,14 +15,16 @@ S_UPPER_SRCS += \
 OBJS += \
 ./Drivers/RTT_Debug/SEGGER_RTT.o \
 ./Drivers/RTT_Debug/SEGGER_RTT_ASM_ARMv7M.o \
-./Drivers/RTT_Debug/SEGGER_RTT_printf.o 
+./Drivers/RTT_Debug/SEGGER_RTT_printf.o \
+./Drivers/RTT_Debug/app_debug.o 
 
 S_UPPER_DEPS += \
 ./Drivers/RTT_Debug/SEGGER_RTT_ASM_ARMv7M.d 
 
 C_DEPS += \
 ./Drivers/RTT_Debug/SEGGER_RTT.d \
-./Drivers/RTT_Debug/SEGGER_RTT_printf.d 
+./Drivers/RTT_Debug/SEGGER_RTT_printf.d \
+./Drivers/RTT_Debug/app_debug.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

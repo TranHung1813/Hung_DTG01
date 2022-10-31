@@ -5,6 +5,7 @@
 #include "ringbuffer.h"
 #include "stdbool.h"
 #include "string.h"
+#include "app_debug.h"
 #include "gsm_utilities.h"
 
 #define E_OK     1
@@ -67,6 +68,7 @@ typedef struct
 void GMS_Hardware_Init(void);
 void GSM_Turn_on_Power(void);
 void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd);
+void GSM_GET_IMEI_Buffer(GSM_Response_Event_TypDef event, void *Resp_Buffer);
 
 void GSM_mnr_task(void);
 void Polling_GSM_StateMachine (void);

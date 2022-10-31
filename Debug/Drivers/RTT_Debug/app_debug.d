@@ -1,8 +1,7 @@
-App/App_Main.o: ../App/App_Main.c ../App/App_Main.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT_Conf.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm.h \
- ../Core/Inc/main.h ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h \
+Drivers/RTT_Debug/app_debug.o: ../Drivers/RTT_Debug/app_debug.c \
+ ../Drivers/RTT_Debug/app_debug.h ../Drivers/RTT_Debug/SEGGER_RTT.h \
+ ../Drivers/RTT_Debug/SEGGER_RTT_Conf.h ../Core/Inc/main.h \
+ ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h \
  ../Core/Inc/stm32l0xx_hal_conf.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_rcc.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h \
@@ -29,19 +28,13 @@ App/App_Main.o: ../App/App_Main.c ../App/App_Main.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr_ex.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h \
- ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/app_debug.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm_utilities/gsm_utilities.h
+ ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h
 
-../App/App_Main.h:
+../Drivers/RTT_Debug/app_debug.h:
 
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT.h:
+../Drivers/RTT_Debug/SEGGER_RTT.h:
 
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT_Conf.h:
-
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm.h:
+../Drivers/RTT_Debug/SEGGER_RTT_Conf.h:
 
 ../Core/Inc/main.h:
 
@@ -100,11 +93,3 @@ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm.h:
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h:
 
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h:
-
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RingBuffer/ringbuffer.h:
-
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/app_debug.h:
-
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/RTT_Debug/SEGGER_RTT.h:
-
-C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm_utilities/gsm_utilities.h:

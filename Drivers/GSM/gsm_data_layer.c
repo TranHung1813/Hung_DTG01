@@ -1,6 +1,7 @@
 # include "gsm.h"
 
 Gsm_Manager_TypDef GSM_Manager;
+static uint8_t GSM_IMEI_Buffer[20] = {0};
 const GSM_ATCommand_Table_TypDef atc_table_config_module[] =
 {
     {"ATV1\r\n", "OK\r\n", "", "ERROR", "", 3000, 5, GSM_Config_Module}, // Set TA Response Format (OK/'0')
@@ -13,7 +14,7 @@ const GSM_ATCommand_Table_TypDef atc_table_config_module[] =
     {"AT+CNMI=2,1,0,0,0\r\n", "OK\r\n", "", "ERROR", "", 10000, 3, GSM_Config_Module}, // Config SMS event report
     {"AT+CMGF=1\r\n", "OK\r\n", "", "ERROR", "", 5000, 5, GSM_Config_Module}, //Set SMS to Text Mode
     {"AT\r\n", "OK\r\n", "", "ERROR", "", 3000, 5, GSM_Config_Module}, // AT Test
-    {"AT+CGSN\r\n", "OK\r\n", "", "ERROR", "", 8000, 5, GSM_Config_Module}, // Get IMEI
+    {"AT+CGSN\r\n", "OK\r\n", "", "ERROR", "", 8000, 5, GSM_GET_IMEI_Buffer}, // Get IMEI
     {"AT+CIMI\r\n", "OK\r\n", "", "ERROR", "", 1000, 5, GSM_Config_Module}, // GET IMSI
     {"AT+QCCID\r\n", "QCCID", "OK\r\n", "ERROR", "", 3000, 3, GSM_Config_Module}, // Get ICCID
     {"AT+CPIN?\r\n", "+CPIN: READY\r\n", "OK\r\n", "ERROR", "", 3000, 3, GSM_Config_Module}, // Get state CPIN
@@ -38,7 +39,7 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
     {
         return;
     }
-    SEGGER_RTT_PrintResult_ATC(atc_table_config_module[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
+    DEBUG_PrintResult_ATC(atc_table_config_module[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
     GSM_SendCommand_AT(atc_table_config_module[TableIndex]);
     GSM_Manager.step++;
 }
@@ -46,6 +47,31 @@ void GSM_mnr_task(void)
 {
     GSM_Hardware_Layer_Run();
     Polling_GSM_StateMachine();
+}
+void GSM_GET_IMEI_Buffer(GSM_Response_Event_TypDef event, void *Resp_Buffer)
+{
+    if(event != GSM_EVENT_OK)
+    {
+        GSM_Config_Module(event, &Resp_Buffer);
+    }
+    else
+    {
+        if(strlen((char*)GSM_IMEI_Buffer) < 14)
+        {
+            GSM_Utilities_Get_IMEI(Resp_Buffer, GSM_IMEI_Buffer, 16);
+            if(strlen((char*)GSM_IMEI_Buffer) < 15)
+            {
+                DEBUG_WARN("IMEI's invalid!\r\n");
+                GSM_Manager_ChangeState(GSM_STATE_RESET); // Cant get GSM imei, maybe gsm module error =>> Restart module
+                return;
+            }
+            else
+            {
+                DEBUG_INFO("GSM IMEI: %s\r\n", GSM_IMEI_Buffer);
+            }
+        }
+        GSM_Config_Module(event, &Resp_Buffer);
+    }
 }
 void Polling_GSM_StateMachine (void)
 {
@@ -70,7 +96,7 @@ void Polling_GSM_StateMachine (void)
 
                 break;
             default:
-                SEGGER_RTT_printf(0,"Unhandled state %d.\r\n", GSM_Manager.state);
+                DEBUG_WARN("Unhandled state %d.\r\n", GSM_Manager.state);
                 break;
         }
     }

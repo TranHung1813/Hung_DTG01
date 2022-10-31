@@ -1,5 +1,5 @@
 gsm_hw_layer.c:17:6:GMS_Hardware_Init	8	static
 gsm_hw_layer.c:26:6:GSM_Hardware_Layer_Run	32	static
-gsm_hw_layer.c:130:6:GSM_Turn_on_Power	8	static
-gsm_hw_layer.c:177:6:GSM_SendCommand_AT	16	static
-gsm_hw_layer.c:203:10:sys_get_tick_ms	8	static
+gsm_hw_layer.c:126:6:GSM_Turn_on_Power	8	static
+gsm_hw_layer.c:173:6:GSM_SendCommand_AT	16	static
+gsm_hw_layer.c:199:10:sys_get_tick_ms	8	static

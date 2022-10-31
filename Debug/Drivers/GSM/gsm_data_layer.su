@@ -1,4 +1,5 @@
-gsm_data_layer.c:33:6:GSM_Config_Module	56	static
-gsm_data_layer.c:45:6:GSM_mnr_task	8	static
-gsm_data_layer.c:50:6:Polling_GSM_StateMachine	40	static
-gsm_data_layer.c:78:6:GSM_Manager_ChangeState	16	static
+gsm_data_layer.c:34:6:GSM_Config_Module	56	static
+gsm_data_layer.c:46:6:GSM_mnr_task	8	static
+gsm_data_layer.c:51:6:GSM_GET_IMEI_Buffer	16	static
+gsm_data_layer.c:76:6:Polling_GSM_StateMachine	40	static
+gsm_data_layer.c:104:6:GSM_Manager_ChangeState	16	static
