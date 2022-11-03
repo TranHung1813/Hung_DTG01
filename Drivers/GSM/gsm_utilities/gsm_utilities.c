@@ -20,14 +20,45 @@ void GSM_Utilities_Get_IMEI(uint8_t *recv_Buffer, uint8_t* IMEI_Buffer, uint8_t 
     }
     IMEI_Buffer[IMEI_Index] = 0;
 }
-
-void DEBUG_PrintBuffer(uint8_t* Buffer, int Buffer_len)
+bool gsm_utilities_get_signal_strength_from_buffer(uint8_t *buffer, uint16_t *csq)
 {
-    for(int Count = 0; Count < Buffer_len; Count++)
+    char *tmp_buff = strstr((char *)buffer, "+CSQ:");
+
+    if (tmp_buff == NULL)
     {
-        DEBUG_INFO("%c",(char)Buffer[Count]);
+        return false;
     }
-    DEBUG_INFO("\r\n");
+
+    *csq = gsm_utilities_get_number_from_string((uint16_t)6, tmp_buff);
+    return true;
+}
+/*
+ * 	Ham doc mot so trong chuoi bat dau tu dia chi nao do.
+ *	Buffer = abc124mff thi gsm_utilities_get_number_from_string(3,Buffer) = 123
+ *
+ */
+uint16_t gsm_utilities_get_number_from_string(uint16_t begin_index, char *buffer)
+{
+    // assert(buffer);
+
+	uint16_t value = 0;
+    uint16_t tmp = begin_index;
+    uint32_t len = strlen(buffer);
+    while (buffer[tmp] && tmp < len)
+    {
+        if (buffer[tmp] >= '0' && buffer[tmp] <= '9')
+        {
+            value *= 10;
+            value += buffer[tmp] - 48;
+        }
+        else
+        {
+            break;
+        }
+        tmp++;
+    }
+
+    return value;
 }
 void DEBUG_PrintResult_ATC(char* cmd, char* result)
 {

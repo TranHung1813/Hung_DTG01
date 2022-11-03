@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "string.h"
 #include "app_debug.h"
+#include "stdbool.h"
 
 /*!
  * @brief               Get gsm imei from buffer
@@ -14,8 +15,9 @@
  */ 
 
 void GSM_Utilities_Get_IMEI(uint8_t *recv_Buffer, uint8_t* IMEI_Buffer, uint8_t Max_IMEI_Length);
+bool gsm_utilities_get_signal_strength_from_buffer(uint8_t *buffer, uint16_t *csq);
+uint16_t gsm_utilities_get_number_from_string(uint16_t begin_index, char *buffer);
 
-void DEBUG_PrintBuffer(uint8_t* Buffer, int Buffer_len);
 void DEBUG_PrintResult_ATC(char* cmd, char* result);
 
 #endif // GSM_UTILITIES_H

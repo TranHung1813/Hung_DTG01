@@ -1,2 +1,4 @@
-App_Main.c:9:6:HAL_UART_RxCpltCallback	16	static
-App_Main.c:19:6:App_Main	8	static
+App_Main.c:20:6:HAL_UART_RxCpltCallback	16	static
+App_Main.c:30:6:App_Main	8	static
+App_Main.c:48:13:dns_initialize	16	static
+App_Main.c:69:5:__io_putchar	32	static

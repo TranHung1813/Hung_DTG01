@@ -28,4 +28,16 @@ Drivers/GSM/gsm_utilities \
 Drivers/RTT_Debug \
 Drivers/RingBuffer \
 Drivers/STM32L0xx_HAL_Driver/Src \
+Drivers/lwip-2.1.3/src/api \
+Drivers/lwip-2.1.3/src/apps/mdns \
+Drivers/lwip-2.1.3/src/apps/mqtt \
+Drivers/lwip-2.1.3/src/apps/sntp \
+Drivers/lwip-2.1.3/src/core \
+Drivers/lwip-2.1.3/src/core/ipv4 \
+Drivers/lwip-2.1.3/src/core/ipv6 \
+Drivers/lwip-2.1.3/src/netif \
+Drivers/lwip-2.1.3/src/netif/ppp \
+Drivers/lwip-2.1.3/src/netif/ppp/polarssl \
+Drivers/mqtt_client \
+Drivers/stm32 \
 

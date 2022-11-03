@@ -9,6 +9,18 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Drivers/stm32/subdir.mk
+-include Drivers/mqtt_client/subdir.mk
+-include Drivers/lwip-2.1.3/src/netif/ppp/polarssl/subdir.mk
+-include Drivers/lwip-2.1.3/src/netif/ppp/subdir.mk
+-include Drivers/lwip-2.1.3/src/netif/subdir.mk
+-include Drivers/lwip-2.1.3/src/core/ipv6/subdir.mk
+-include Drivers/lwip-2.1.3/src/core/ipv4/subdir.mk
+-include Drivers/lwip-2.1.3/src/core/subdir.mk
+-include Drivers/lwip-2.1.3/src/apps/sntp/subdir.mk
+-include Drivers/lwip-2.1.3/src/apps/mqtt/subdir.mk
+-include Drivers/lwip-2.1.3/src/apps/mdns/subdir.mk
+-include Drivers/lwip-2.1.3/src/api/subdir.mk
 -include Drivers/STM32L0xx_HAL_Driver/Src/subdir.mk
 -include Drivers/RingBuffer/subdir.mk
 -include Drivers/RTT_Debug/subdir.mk

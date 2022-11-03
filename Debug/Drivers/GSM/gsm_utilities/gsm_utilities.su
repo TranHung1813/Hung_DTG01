@@ -1,3 +1,4 @@
 gsm_utilities.c:3:6:GSM_Utilities_Get_IMEI	32	static
-gsm_utilities.c:24:6:DEBUG_PrintBuffer	24	static
-gsm_utilities.c:32:6:DEBUG_PrintResult_ATC	96	static
+gsm_utilities.c:23:6:gsm_utilities_get_signal_strength_from_buffer	24	static
+gsm_utilities.c:40:10:gsm_utilities_get_number_from_string	32	static
+gsm_utilities.c:63:6:DEBUG_PrintResult_ATC	96	static

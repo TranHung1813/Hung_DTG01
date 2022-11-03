@@ -1,8 +1,5 @@
 #include "gsm.h"
 
-#define EC200_SEND(huart,DataSend,length)  HAL_UART_Transmit(huart,DataSend,length,200)
-
-extern UART_HandleTypeDef huart1;
 RingBuffer_Types Rx_Buffer;
 
 uint32_t Current_Response_len;
@@ -13,9 +10,15 @@ uint8_t *p_compare_end_str;
 uint8_t *p_compare_end_str_error_handle;
 
 static GSM_Hardware_atc_TypDef m_gsm_atc;
+// Buffer for ppp
+static GSM_Modem_Buffer_TypDef m_gsm_modem_buffer;
 
 void GMS_Hardware_Init(void)
 {
+	// Turn off power GSM
+	HAL_GPIO_WritePin(EN_GSM_GPIO_Port,EN_GSM_Pin,0);
+	HAL_GPIO_WritePin(GSM_RESET_GPIO_Port,GSM_RESET_Pin,1);
+	HAL_GPIO_WritePin(GSM_PWKEY_GPIO_Port,GSM_PWKEY_Pin,0);
 	//Init SEGGER RTT Debug
 	SEGGER_RTT_Init();
 	// Cap phat bo nho cho RxRingBuffer
@@ -42,17 +45,22 @@ void GSM_Hardware_Layer_Run(void)
 			{
 				m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_TIMEOUT,NULL);
 			}
-			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
+			memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+			m_gsm_atc.atc.Recv_Buffer.index = 0;
 		}
 		else
 		{
-			DEBUG_INFO("Retry send ATC %d.\r\n",m_gsm_atc.atc.Retry_Count_atc);
+			char sub_cmd[64] = "";
+			strncpy(sub_cmd, m_gsm_atc.atc.cmd + 0, strlen(m_gsm_atc.atc.cmd) - 2);
+			DEBUG_WARN("Retry send [%s] %d.\r\n", sub_cmd, m_gsm_atc.atc.Retry_Count_atc);
+			DEBUG_RAW("index = %d\r\n",m_gsm_atc.atc.Recv_Buffer.index);
+			DEBUG_RAW("%s\r\n", (char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer);
 			m_gsm_atc.atc.Last_time_send_atc_ms = sys_get_tick_ms();
-			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
-			HAL_UART_Transmit(&huart1, (uint8_t*) m_gsm_atc.atc.cmd, strlen(m_gsm_atc.atc.cmd), 200);
+			memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+			m_gsm_atc.atc.Recv_Buffer.index = 0;
+			GSM_UART_TX((uint8_t*) m_gsm_atc.atc.cmd, strlen(m_gsm_atc.atc.cmd), 200);
 		}
 	}
-	RingBuffer_GetBuffer(&m_gsm_atc.atc.Recv_Buffer,&Rx_Buffer);
 	if(strlen(m_gsm_atc.atc.expect_resp) && strstr((char*)m_gsm_atc.atc.Recv_Buffer.u8Buffer, m_gsm_atc.atc.expect_resp))
 	{
 		bool do_callback = true;
@@ -83,7 +91,8 @@ void GSM_Hardware_Layer_Run(void)
 			m_gsm_atc.atc.Timeout_atc_ms = 0;
 			m_gsm_atc.atc.Retry_Count_atc = 0;
 			m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_OK,m_gsm_atc.atc.Recv_Buffer.u8Buffer);
-			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
+			memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+			m_gsm_atc.atc.Recv_Buffer.index = 0;
 		}
 
 	}
@@ -118,7 +127,8 @@ void GSM_Hardware_Layer_Run(void)
 			m_gsm_atc.atc.Timeout_atc_ms = 0;
 			m_gsm_atc.atc.Retry_Count_atc = 0;
 			m_gsm_atc.atc.Send_at_Callback(GSM_EVENT_ERROR,m_gsm_atc.atc.Recv_Buffer.u8Buffer);
-			memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
+			memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+			m_gsm_atc.atc.Recv_Buffer.index = 0;
 		}
 	}
 	LastTick = sys_get_tick_ms();
@@ -137,8 +147,10 @@ void GSM_Turn_on_Power(void)
 			break;
 		case 1:
 			HAL_GPIO_WritePin(GSM_RESET_GPIO_Port,GSM_RESET_Pin,0);
-			DEBUG_INFO("GSM turn on Power!\r\n");
+			DEBUG_INFO("GSM power on.\r\n");
 			HAL_GPIO_WritePin(EN_GSM_GPIO_Port,EN_GSM_Pin,1);
+			// Enable nguon 5V
+			HAL_GPIO_WritePin(CHARGE_EN_GPIO_Port,CHARGE_EN_Pin,1);
 			// Enable nguon 4.2V
 			HAL_GPIO_WritePin(GSM_EN_GPIO_Port,GSM_EN_Pin,1);
 			step++;
@@ -174,8 +186,10 @@ void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd)
 {
 	if(AT_Cmd.Timeout_atc_ms == 0 || AT_Cmd.Send_at_Callback == NULL)
 	{
-		memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
-		HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
+		memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+		m_gsm_atc.atc.Recv_Buffer.index = 0;
+		//HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
+		GSM_UART_TX((uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 		return;
 	}
 	if(strlen(AT_Cmd.cmd) < 64)
@@ -192,11 +206,93 @@ void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd)
 	m_gsm_atc.atc.Retry_Count_atc = AT_Cmd.Retry_Count_atc;
 	m_gsm_atc.atc.Send_at_Callback = AT_Cmd.Send_at_Callback;
 
-	memset(&m_gsm_atc.atc.Recv_Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer));
-	HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
+	memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+	m_gsm_atc.atc.Recv_Buffer.index = 0;
+	//HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
+	GSM_UART_TX((uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 
 }
-uint32_t sys_get_tick_ms(void)
+uint32_t sio_read(sio_fd_t fd, u8_t *data, u32_t len)
 {
-    return HAL_GetTick();
+    return GSM_Hardware_layer_Copy_ppp_Buffer(data, len);
 }
+static uint8_t m_ppp_rx_buffer[512];
+void GSM_Hardware_pppos_Polling(void)
+{
+    uint32_t sio_size;
+    sys_check_timeouts();
+	uint8_t buffer[512] = {0};
+	uint16_t dataLength = 0;
+
+	RingBuffer_GetBuffer(buffer, &dataLength, &Rx_Buffer);
+	GSM_HwLayer_Fill_Rx_Buffer(buffer, dataLength);
+
+    sio_size = sio_read(0, m_ppp_rx_buffer, 512);
+	if(sio_size > 0)
+	{
+		// Bypass data into ppp stack
+		pppos_input(gsm_data_layer_get_ppp_control_block(), m_ppp_rx_buffer, sio_size);
+	}
+
+}
+void GSM_HwLayer_Reset_Rx_Buffer(void)
+{
+	memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
+	m_gsm_atc.atc.Recv_Buffer.index = 0;
+	memset(&m_gsm_modem_buffer, 0, sizeof(m_gsm_modem_buffer));
+	m_gsm_atc.atc.Retry_Count_atc = 0;
+}
+void GSM_HwLayer_Fill_Rx_Buffer(uint8_t* data, uint32_t length)
+{
+	if(length)
+	{
+		// Device do not enter AT mode =>> bypass data into PPP stack
+		if(gsm_is_in_ppp_mode())
+		{
+			for(int CountByte = 0; CountByte < length; CountByte ++)
+			{
+				m_gsm_modem_buffer.u8Buffer[m_gsm_modem_buffer.idx_in++] = data[CountByte];
+			}
+			if(m_gsm_modem_buffer.idx_in >= GSM_PPP_MODEM_BUFFER_SIZE)
+			{
+				m_gsm_modem_buffer.idx_in = 0;
+			}
+			m_gsm_modem_buffer.u8Buffer[m_gsm_modem_buffer.idx_in] = 0;
+		}
+		else
+		{
+			for(int CountByte = 0; CountByte < length; CountByte ++)
+			{
+				m_gsm_atc.atc.Recv_Buffer.u8Buffer[m_gsm_atc.atc.Recv_Buffer.index] = data[CountByte];
+				m_gsm_atc.atc.Recv_Buffer.index ++;
+				if(m_gsm_atc.atc.Recv_Buffer.index >= GSM_ATC_BUFFER_SIZE)
+				{
+					DEBUG_ERROR("GSM ATC RX Buffer out of range!\r\n");
+                    m_gsm_atc.atc.Recv_Buffer.index = 0;
+                    m_gsm_atc.atc.Recv_Buffer.u8Buffer[0] = 0;
+                    return;
+				}
+			}
+		}
+	}
+}
+uint32_t GSM_Hardware_layer_Copy_ppp_Buffer(uint8_t* data, uint32_t length)
+{
+	int CountByte = 0;
+	for(CountByte = 0; CountByte < length; CountByte++)
+	{
+		if(m_gsm_modem_buffer.idx_out == m_gsm_modem_buffer.idx_in)
+		{
+			return CountByte; // Da quet het Buffer Modem
+		}
+		data[CountByte] = m_gsm_modem_buffer.u8Buffer[m_gsm_modem_buffer.idx_out];
+		m_gsm_modem_buffer.idx_out ++;
+		if(m_gsm_modem_buffer.idx_out >= GSM_PPP_MODEM_BUFFER_SIZE)
+		{
+			m_gsm_modem_buffer.idx_out = 0;
+		}
+	}
+	return CountByte;
+}
+
+

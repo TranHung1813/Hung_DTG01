@@ -58,6 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define CHARGE_EN_Pin GPIO_PIN_4
+#define CHARGE_EN_GPIO_Port GPIOC
 #define EN_GSM_Pin GPIO_PIN_6
 #define EN_GSM_GPIO_Port GPIOC
 #define GSM_PWKEY_Pin GPIO_PIN_8

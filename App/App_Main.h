@@ -1,7 +1,7 @@
 #include <string.h>
-#include "SEGGER_RTT.h"
 #include <stdio.h>
 #include "gsm.h"
+#include "mqtt_client.h"
 
 
 void App_Main(void);

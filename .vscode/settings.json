@@ -3,6 +3,11 @@
         "app_main.h": "c",
         "ec200_data_layer.h": "c",
         "gsm_utilities.h": "c",
-        "gsm.h": "c"
+        "gsm.h": "c",
+        "ppp_opts.h": "c",
+        "dns.h": "c",
+        "ctype.h": "c",
+        "sio.h": "c",
+        "typeinfo": "c"
     }
 }

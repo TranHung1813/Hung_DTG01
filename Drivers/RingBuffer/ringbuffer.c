@@ -49,18 +49,18 @@ uint8_t RingBuffer_Pop(RingBuffer_Types* ringbuffer)
     return BytePush;
 }
 // Doc toan bo du lieu trong RingBuffer gán vào return Buffer
-void RingBuffer_GetBuffer(GSM_atc_Buffer_TypDef* retBuffer, RingBuffer_Types* ringbuffer)
+void RingBuffer_GetBuffer(uint8_t* retBuffer, uint16_t* dataLength, RingBuffer_Types* ringbuffer)
 {
     int Num_Elements = RingBuffer_GetNumberElements(ringbuffer);
     if(Num_Elements == 0)
     {
     	return;
     }
-    for(int CountByte = retBuffer->index; CountByte < retBuffer->index + Num_Elements; CountByte ++)
+    for(int CountByte = 0; CountByte < Num_Elements; CountByte ++)
     {
-        retBuffer->u8Buffer[CountByte] = RingBuffer_Pop(ringbuffer);
+        retBuffer[CountByte] = RingBuffer_Pop(ringbuffer);
     }
-    retBuffer->index += Num_Elements;
+    *dataLength = Num_Elements;
 }
 
 // Lay tong so byte du lieu trong RingBuffer
