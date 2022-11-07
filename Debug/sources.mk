@@ -28,7 +28,9 @@ Drivers/GSM/gsm_utilities \
 Drivers/RTT_Debug \
 Drivers/RingBuffer \
 Drivers/STM32L0xx_HAL_Driver/Src \
+Drivers/http_client \
 Drivers/lwip-2.1.3/src/api \
+Drivers/lwip-2.1.3/src/apps/http \
 Drivers/lwip-2.1.3/src/apps/mdns \
 Drivers/lwip-2.1.3/src/apps/mqtt \
 Drivers/lwip-2.1.3/src/apps/sntp \

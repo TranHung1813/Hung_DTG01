@@ -8,6 +8,7 @@
         "dns.h": "c",
         "ctype.h": "c",
         "sio.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "http_client.h": "c"
     }
 }

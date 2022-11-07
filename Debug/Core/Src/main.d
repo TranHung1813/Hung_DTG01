@@ -88,7 +88,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/mqtt_opts.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/mqtt_priv.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/mqtt.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/altcp.h
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/altcp.h \
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/http_client/http_client_t.h \
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/http_client.h
 
 ../Core/Inc/main.h:
 
@@ -275,3 +277,7 @@ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/mqtt.h:
 
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/altcp.h:
+
+C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/http_client/http_client_t.h:
+
+C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/http_client.h:

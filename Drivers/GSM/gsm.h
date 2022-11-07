@@ -21,7 +21,7 @@
 #define E_NOT_OK 0
 #define MAX_ATC_TABLE_ROW  25
 
-#define GSM_ATC_BUFFER_SIZE                   256   // AT command buffer size
+#define GSM_ATC_BUFFER_SIZE                   1024   // AT command buffer size
 #define GSM_PPP_MODEM_BUFFER_SIZE             1024  // PPP buffer size
 
 extern UART_HandleTypeDef huart1;

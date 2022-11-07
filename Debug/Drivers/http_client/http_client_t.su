@@ -1,0 +1,8 @@
+http_client_t.c:11:6:HTTP_Client_Init	16	static
+http_client_t.c:18:6:HTTP_Cleanup	8	static
+http_client_t.c:27:7:HTTP_Headers_Done_Callback	24	static
+http_client_t.c:51:13:HTTP_Result_Callback	40	static
+http_client_t.c:94:14:HTTP_File_Receive_Callback	48	static
+http_client_t.c:120:6:HTTP_Config	24	static
+http_client_t.c:131:6:HTTP_Get_Data	40	static
+http_client_t.c:154:6:HTTP_Client_Polling_Task	24	static

@@ -28,10 +28,9 @@ const GSM_ATCommand_Table_TypDef atc_table_config_module[] =
     {"AT+CMGF=1\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 5000, 5, GSM_Config_Module}, //Set SMS to Text Mode
     {"AT\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 3000, 5, GSM_Config_Module}, // AT Test
     {"AT+CGSN\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 8000, 5, GSM_GET_IMEI_Buffer}, // Get IMEI
-    {"AT+CPIN?\r\n", "+CPIN: READY\r\n", "OK\r\n", "", "", 3000, 3, GSM_Config_Module}, // Get state CPIN
     {"AT+CIMI\r\n", "OK\r\n", "OK\r\n", "", "", 1000, 5, GSM_Config_Module}, // GET IMSI
     {"AT+QCCID\r\n", "QCCID", "OK\r\n", "ERROR", "", 3000, 7, GSM_Config_Module}, // Get ICCID
-    {"AT+CPIN?\r\n", "+CPIN: READY\r\n", "OK\r\n", "ERROR", "", 3000, 3, GSM_Config_Module}, // Get state CPIN
+    {"AT+CPIN?\r\n", "+CPIN: READY\r\n", "OK\r\n", "", "", 3000, 3, GSM_Config_Module}, // Get state CPIN
     {"AT+QIDEACT=1\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 3000, 3, GSM_Config_Module},// De-activate PDP
     {"AT\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 5000, 2, GSM_Config_Module}, // AT Test
     {"AT+CGDCONT=1,\"IP\",\"v-internet\"\r\n", "OK\r\n", "", "ERROR", "", 3000, 5, GSM_Config_Module}, // Define PDP context
@@ -78,7 +77,7 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
         }
         GSM_Manager.step++;
     }
-    else if(event == GSM_EVENT_TIMEOUT)
+    else //if(event == GSM_EVENT_TIMEOUT)
     {
         GSM_Manager_ChangeState(GSM_STATE_RESET);
     }
@@ -123,9 +122,10 @@ void open_ppp_stack(GSM_Response_Event_TypDef event, void *Resp_Buffer)
         }
         GSM_Manager.step++;
     }
-    else
+    else //if(event == GSM_EVENT_TIMEOUT)
     {
         // Handle ERROR
+        GSM_Manager_ChangeState(GSM_STATE_RESET);
     }
 }
 void GSM_GET_IMEI_Buffer(GSM_Response_Event_TypDef event, void *Resp_Buffer)

@@ -7,7 +7,7 @@ extern UART_HandleTypeDef huart1;
 uint8_t data = 0;
 extern RingBuffer_Types Rx_Buffer;
 
-MQTT_Client_Config_TypDef cfg =
+MQTT_Client_Config_TypDef MQTT_Cfg =
 {
 	30,
 	"test-mqtt-stm32-ec200.cloud.shiftr.io",
@@ -15,6 +15,12 @@ MQTT_Client_Config_TypDef cfg =
 	"Hung_DTG01",
 	"test-mqtt-stm32-ec200",
 	"inQSolHhWx8lX0xj",
+};
+HTTP_Client_Config_TypDef HTTP_Cfg = 
+{
+	"httpbin.org",
+	80,
+	"/get",
 };
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -34,14 +40,16 @@ void App_Main ()
 
  	dns_initialize();
 	lwip_init();
-	MQTT_Client_Init(&cfg);
+	//MQTT_Client_Init(&MQTT_Cfg);
+	HTTP_Client_Init(&HTTP_Cfg);
 	DEBUG_INFO("Application started\r\n");
 	GMS_Hardware_Init();
 	//UART_SendData(USART1, bf_send, sizeof(bf_send));
 	while(1)
 	{
 		GSM_mnr_task();
-		MQTT_Client_Polling_Task(NULL);
+		//MQTT_Client_Polling_Task(NULL);
+		HTTP_Client_Polling_Task(NULL);
 	}
 }
 
