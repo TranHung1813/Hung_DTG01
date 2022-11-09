@@ -8,12 +8,14 @@
 static char Account_Info_AT_Command[MAX_SIZE_AT_COMMAND];
 static char FTP_Server_Login_Info_AT_Command[MAX_SIZE_AT_COMMAND];
 static char Upload_File_AT_Command[MAX_SIZE_AT_COMMAND];
+static char Download_File_AT_Command[MAX_SIZE_AT_COMMAND];
 static char Get_File_Size_AT_Command[MAX_SIZE_AT_COMMAND];
 static char Set_Directory_AT_Command[MAX_SIZE_AT_COMMAND];
 static char Upload_File_Data[MAX_FILE_SEND_SIZE];
 static FTP_Config_TypDef File_Handler_Config;
 static GSM_FileHandler_Manager_TypDef File_Handler_Manager;
 static GSM_Multi_FileSend_Info_TypDef FileSend_Info;
+static GSM_FileDownload_Info_TypDef FileDownload_Info;
 
 void GSM_FileSend_Handler(GSM_Response_Event_TypDef event, void *Resp_Buffer);
 
@@ -53,6 +55,13 @@ const GSM_ATCommand_Table_TypDef ATC_Table_File_Tranfer[] =
     // Query the size of file on FTP server.
     {Get_File_Size_AT_Command, "+QFTPSIZE:", "", "ERROR", "", 6000, 3, GSM_File_Transfer_Seq},
 };
+const GSM_ATCommand_Table_TypDef ATC_Table_File_Download[] =
+{
+    // Set current directory
+    {Set_Directory_AT_Command, "OK\r\n", "+QFTPCWD: 0,0\r\n", "ERROR", "", 10000, 3, GSM_File_Download_Seq},
+    // Upload file via COM Port
+    {Download_File_AT_Command, "+QFTPGET: ", "", "", "", 7000, 3, GSM_File_Download_Seq},
+};
 
 void GSM_File_Handler_Init(FTP_Config_TypDef* cfg)
 {
@@ -74,6 +83,7 @@ void GSM_File_Handler_Init(FTP_Config_TypDef* cfg)
 void GSM_FileSend_Handler(GSM_Response_Event_TypDef event, void *Resp_Buffer)
 {
     static uint8_t step = 0;
+    static uint8_t retry_count = 0;
     switch (step)
     {
     case 0:
@@ -83,7 +93,7 @@ void GSM_FileSend_Handler(GSM_Response_Event_TypDef event, void *Resp_Buffer)
         }
         else
         {
-            DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
+            //DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
             if(gsm_utilities_is_file_exist(FileSend_Info.File[FileSend_Info.FileID].Name, (char*)Resp_Buffer))
             {
                 // Get size of exist file
@@ -100,9 +110,19 @@ void GSM_FileSend_Handler(GSM_Response_Event_TypDef event, void *Resp_Buffer)
             }
             else
             {
-                FileSend_Info.File[FileSend_Info.FileID].Index = 0;
-                DEBUG_INFO("File does not exist -> Create new file!\r\n");
-                GSM_File_Transfer_Seq(event, &Resp_Buffer);
+                if(++retry_count >= 3)
+                {
+                    retry_count = 0;
+                    FileSend_Info.File[FileSend_Info.FileID].Index = 0;
+                    DEBUG_INFO("File does not exist -> Create new file: \"%s\"\r\n",
+                                                            FileSend_Info.File[FileSend_Info.FileID].Name);
+                    GSM_File_Transfer_Seq(event, &Resp_Buffer);
+                }
+                else
+                {
+                    File_Handler_Manager.step = 1;
+                    GSM_SendCommand_AT(ATC_Table_File_Tranfer[0]);
+                }
             }
         }
         break;
@@ -110,8 +130,13 @@ void GSM_FileSend_Handler(GSM_Response_Event_TypDef event, void *Resp_Buffer)
         if(event == GSM_EVENT_OK)
         {
             step = 0;
-            // Lay file size cua file da ton tai de Write Append 
-            FileSend_Info.File[FileSend_Info.FileID].Index = gsm_utilities_get_number_from_string(21, (char*)Resp_Buffer);
+            // Caculate File Exist Length base on Resp_Buffer
+            char* substr = "+QFTPSIZE: 0,";
+            char* result = strstr((char*)Resp_Buffer, substr);
+            int position = result - (char*)Resp_Buffer;
+            int FileLength = gsm_utilities_get_number_from_string (position + strlen(substr),
+                                                                         (char*)Resp_Buffer);
+            FileSend_Info.File[FileSend_Info.FileID].Index = FileLength;
             DEBUG_INFO("File exist, size %d bytes.\r\n", FileSend_Info.File[FileSend_Info.FileID].Index);
             // Set File Index
             snprintf(Upload_File_AT_Command, sizeof(Upload_File_AT_Command), "%s%s%s%d%s%d%s",
@@ -142,7 +167,7 @@ void GSM_Login_Server_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
         return;
     }
     DEBUG_PrintResult_ATC(ATC_Table_Login_Server[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
-    DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
+    //DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
     if(event == GSM_EVENT_OK)
     {
         if(TableIndex < TableSize)
@@ -156,17 +181,24 @@ void GSM_Login_Server_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
             DEBUG_INFO("Log in server DONE.\r\n");
             if(File_Handler_Manager.mode == GSM_FILE_MODE_UPLOAD)
             {
-                // Chuyen sang Mode Download
+                // Chuyen sang Mode Upload
                 FileSend_Info.FileID = 0;
-                GSM_Add_FileInfo_to_AT_Command(&FileSend_Info.File[FileSend_Info.FileID]);
+                DEBUG_INFO("Start transferring file \"%s\".\r\n", FileSend_Info.File[0].Name);
+                Add_FileTranfer_Info_to_AT_Command(&FileSend_Info.File[FileSend_Info.FileID]);
                 GSM_SendCommand_AT(ATC_Table_File_Tranfer[0]);
+            }
+            else if(File_Handler_Manager.mode == GSM_FILE_MODE_DOWNLOAD)
+            {
+                // Chuyen sang Mode Download
+            	Add_FileDownload_Info_to_AT_Command(&FileDownload_Info);
+                GSM_SendCommand_AT(ATC_Table_File_Download[0]);
             }
         }
         File_Handler_Manager.step++;
     }
     else //if(event == GSM_EVENT_TIMEOUT)
     {
-        //GSM_Manager_ChangeState(GSM_STATE_RESET);
+        GSM_Manager_ChangeState(GSM_STATE_RESET);
     }
 }
 void GSM_File_Transfer_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
@@ -178,7 +210,7 @@ void GSM_File_Transfer_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
         return;
     }
     DEBUG_PrintResult_ATC(ATC_Table_File_Tranfer[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
-    DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
+    //DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
     if(event == GSM_EVENT_OK)
     {
         if(TableIndex < TableSize)
@@ -189,16 +221,26 @@ void GSM_File_Transfer_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
         {
             // Da Transfer File xong
             File_Handler_Manager.step = 0;
-            DEBUG_INFO("File %d: %s Transfer DONE.\r\n", FileSend_Info.FileID + 1,
-                                                         FileSend_Info.File[FileSend_Info.FileID].Name);
-            // Bat dau chuyen file tiep theo
+            // Caculate Length File vua Transfer base on Resp_Buffer
+            char* substr = "+QFTPSIZE: 0,";
+            char* result = strstr((char*)Resp_Buffer, substr);
+            int position = result - (char*)Resp_Buffer;
+            int FileLength = gsm_utilities_get_number_from_string (position + strlen(substr),
+                                                                        (char*)Resp_Buffer);
+            DEBUG_INFO("File %d: \"%s\" Transfer DONE, size %d bytes.\r\n",
+                                                            FileSend_Info.FileID + 1,
+                                                            FileSend_Info.File[FileSend_Info.FileID].Name,
+                                                            FileLength);
+            // Bat dau chuyen sang transfer file tiep theo
             if(++FileSend_Info.FileID >= FileSend_Info.NumberFile)
             {
                 DEBUG_INFO("All File Transfer DONE.\r\n");
             }
             else
             {
-                GSM_Add_FileInfo_to_AT_Command(&FileSend_Info.File[FileSend_Info.FileID]);
+                DEBUG_INFO("Start transferring file \"%s\".\r\n",
+                                                            FileSend_Info.File[FileSend_Info.FileID].Name);
+                Add_FileTranfer_Info_to_AT_Command(&FileSend_Info.File[FileSend_Info.FileID]);
                 GSM_SendCommand_AT(ATC_Table_File_Tranfer[0]);
             }
         }
@@ -206,12 +248,47 @@ void GSM_File_Transfer_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
     }
     else //if(event == GSM_EVENT_TIMEOUT)
     {
-        //GSM_Manager_ChangeState(GSM_STATE_RESET);
+        GSM_Manager_ChangeState(GSM_STATE_RESET);
     }
 }
-void GSM_Add_FileInfo_to_AT_Command(GSM_FileSend_Info_TypDef *File_Info)
+void GSM_File_Download_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer)
 {
-    // Set File Name
+    uint8_t TableIndex = File_Handler_Manager.step;
+    const static uint8_t TableSize = sizeof(ATC_Table_File_Download)/sizeof(ATC_Table_File_Download[0]);
+    if(TableIndex > TableSize)
+    {
+        return;
+    }
+    DEBUG_PrintResult_ATC(ATC_Table_File_Download[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
+    DEBUG_RAW("%s\r\n", (char*)Resp_Buffer);
+    if(event == GSM_EVENT_OK)
+    {
+        if(TableIndex < TableSize)
+        {
+            GSM_SendCommand_AT(ATC_Table_File_Download[TableIndex]);
+        }
+        else
+        {
+            // Da Download File xong
+            File_Handler_Manager.step = 0;
+            // Caculate File Dowload Length base on Resp_Buffer
+            char* substr = "+QFTPGET: 0,";
+            char* result = strstr((char*)Resp_Buffer, substr);
+            int position = result - (char*)Resp_Buffer;
+            int FileLength = gsm_utilities_get_number_from_string (position + strlen(substr), (char*)Resp_Buffer);
+            DEBUG_INFO("File \"%s\" Download DONE, length %d bytes.\r\n", FileDownload_Info.Name, FileLength);
+
+        }
+        File_Handler_Manager.step++;
+    }
+    else //if(event == GSM_EVENT_TIMEOUT)
+    {
+        GSM_Manager_ChangeState(GSM_STATE_RESET);
+    }
+}
+void Add_FileTranfer_Info_to_AT_Command(GSM_FileSend_Info_TypDef *File_Info)
+{
+    // Set Upload File Name
     snprintf(Upload_File_AT_Command, sizeof(Upload_File_AT_Command), "%s%s%s%d%s%d%s",
                                                                 "AT+QFTPPUT=\"",
                                                                 File_Info->Name,
@@ -225,13 +302,25 @@ void GSM_Add_FileInfo_to_AT_Command(GSM_FileSend_Info_TypDef *File_Info)
     //                                                         FileSend_Info.Name,
     //                                                         "\",\"COM:\",",
     //                                                         "0,20,1\r\n");                                                     
-    // Set File Data
+    // Set File Data to Upload
     snprintf(Upload_File_Data, sizeof(Upload_File_Data), "%s%s", File_Info->Data, "\r\n");
     // Set Commamd Get File Size
     snprintf(Get_File_Size_AT_Command, sizeof(Get_File_Size_AT_Command), "%s%s%s",
                                                                 "AT+QFTPSIZE=\"",
                                                                 File_Info->Name,
                                                                 "\"\r\n");
+    // Set File Directory
+    snprintf(Set_Directory_AT_Command, sizeof(Set_Directory_AT_Command), "%s%s%s",
+                                                                "AT+QFTPCWD=\"",
+                                                                File_Info->Directory,
+                                                                "\"\r\n");
+}
+void Add_FileDownload_Info_to_AT_Command(GSM_FileDownload_Info_TypDef *File_Info)
+{
+    snprintf(Download_File_AT_Command, sizeof(Download_File_AT_Command), "%s%s%s",
+                                                                "AT+QFTPGET=\"",
+                                                                File_Info->Name,
+                                                                "\",\"COM:\"\r\n");
     // Set File Directory
     snprintf(Set_Directory_AT_Command, sizeof(Set_Directory_AT_Command), "%s%s%s",
                                                                 "AT+QFTPCWD=\"",
@@ -246,6 +335,16 @@ void GSM_Send_File(GSM_Multi_FileSend_Info_TypDef *File_Info)
         File_Handler_Manager.step = 1;
         GSM_SendCommand_AT(ATC_Table_Login_Server[0]);
         File_Handler_Manager.mode = GSM_FILE_MODE_UPLOAD;
+    }
+}
+void GSM_Download_File(GSM_FileDownload_Info_TypDef *File_Info)
+{
+    memcpy(&FileDownload_Info, File_Info, sizeof(GSM_FileSend_Info_TypDef));
+    if(File_Handler_Manager.step == 0)
+    {
+        File_Handler_Manager.step = 1;
+        GSM_SendCommand_AT(ATC_Table_Login_Server[0]);
+        File_Handler_Manager.mode = GSM_FILE_MODE_DOWNLOAD;
     }
 }
 

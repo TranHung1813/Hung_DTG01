@@ -30,6 +30,13 @@ typedef struct
 } GSM_FileSend_Info_TypDef;
 typedef struct
 {
+    char* Data;
+    uint16_t DataLength;
+    char* Name;
+    char* Directory;
+} GSM_FileDownload_Info_TypDef;
+typedef struct
+{
     GSM_FileSend_Info_TypDef File[MAX_NUMBER_MULTI_FILE_SEND];
     uint8_t NumberFile;
     uint8_t FileID;  // Vi tri File gui di
@@ -43,8 +50,12 @@ typedef struct
 void GSM_File_Handler_Init(FTP_Config_TypDef* cfg);
 void GSM_Login_Server_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer);
 void GSM_File_Transfer_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer);
+void GSM_File_Download_Seq(GSM_Response_Event_TypDef event, void *Resp_Buffer);
+
+void Add_FileTranfer_Info_to_AT_Command(GSM_FileSend_Info_TypDef *File_Info);
+void Add_FileDownload_Info_to_AT_Command(GSM_FileDownload_Info_TypDef *File_Info);
 void GSM_Send_File(GSM_Multi_FileSend_Info_TypDef *File_Info);
-void GSM_Add_FileInfo_to_AT_Command(GSM_FileSend_Info_TypDef *File_Info);
+void GSM_Download_File(GSM_FileDownload_Info_TypDef *File_Info);
 
 
 

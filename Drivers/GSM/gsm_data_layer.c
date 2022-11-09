@@ -5,6 +5,7 @@ Gsm_Manager_TypDef GSM_Manager;
 static uint8_t GSM_IMEI_Buffer[20] = {0};
 static uint16_t GSM_Signal_Strength = 0;
 static GSM_Multi_FileSend_Info_TypDef Multi_FileSendCfg;
+static GSM_FileDownload_Info_TypDef FileDownload_Cfg;
 // PPP
 /* The PPP IP interface */
 static struct netif m_ppp_netif;
@@ -77,8 +78,8 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
             //GSM_SendCommand_AT(ATC_Table_open_ppp_stack[0]);
             /* Set up File Send*/
             Multi_FileSendCfg.NumberFile = 3;
-            Multi_FileSendCfg.File[0].Name = "test1.txt";
-            Multi_FileSendCfg.File[0].Data = "\r\nHello World!!! File1\r\n";
+            Multi_FileSendCfg.File[0].Name = "test6.txt";
+            Multi_FileSendCfg.File[0].Data = "\r\nHello World!!! File6\r\n";
             Multi_FileSendCfg.File[0].DataLength = strlen(Multi_FileSendCfg.File[0].Data);
             Multi_FileSendCfg.File[0].Directory = "/Test/";
 
@@ -93,6 +94,9 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
             Multi_FileSendCfg.File[2].Directory = "/Test/";
 
             GSM_Send_File(&Multi_FileSendCfg);
+            FileDownload_Cfg.Name = "Readme.txt";
+            FileDownload_Cfg.Directory = "/Test/";
+            //GSM_Download_File(&FileDownload_Cfg);
         }
         GSM_Manager.step++;
     }
