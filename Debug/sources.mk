@@ -24,6 +24,7 @@ App \
 Core/Src \
 Core/Startup \
 Drivers/GSM \
+Drivers/GSM/gsm_file_handler \
 Drivers/GSM/gsm_utilities \
 Drivers/RTT_Debug \
 Drivers/RingBuffer \

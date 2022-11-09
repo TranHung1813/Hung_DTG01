@@ -2,8 +2,8 @@ gsm_hw_layer.c:16:6:GMS_Hardware_Init	8	static
 gsm_hw_layer.c:29:6:GSM_Hardware_Layer_Run	104	static
 gsm_hw_layer.c:136:6:GSM_Turn_on_Power	8	static
 gsm_hw_layer.c:185:6:GSM_SendCommand_AT	16	static
-gsm_hw_layer.c:215:10:sio_read	24	static
-gsm_hw_layer.c:220:6:GSM_Hardware_pppos_Polling	536	static
-gsm_hw_layer.c:238:6:GSM_HwLayer_Reset_Rx_Buffer	8	static
-gsm_hw_layer.c:245:6:GSM_HwLayer_Fill_Rx_Buffer	24	static
-gsm_hw_layer.c:279:10:GSM_Hardware_layer_Copy_ppp_Buffer	24	static
+gsm_hw_layer.c:217:10:sio_read	24	static
+gsm_hw_layer.c:222:6:GSM_Hardware_pppos_Polling	536	static
+gsm_hw_layer.c:240:6:GSM_HwLayer_Reset_Rx_Buffer	8	static
+gsm_hw_layer.c:247:6:GSM_HwLayer_Fill_Rx_Buffer	24	static
+gsm_hw_layer.c:281:10:GSM_Hardware_layer_Copy_ppp_Buffer	24	static

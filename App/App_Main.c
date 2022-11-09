@@ -22,7 +22,13 @@ HTTP_Client_Config_TypDef HTTP_Cfg =
 	80,
 	"/get",
 };
-
+FTP_Config_TypDef GSM_File_Handler_Cfg = 
+{
+	"171.244.40.51",
+	"firmware",
+	"abcd@1234",
+	(uint32_t)21,
+};
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 //	m_rx_buff.data[m_rx_buff.index] = data ;
@@ -39,9 +45,10 @@ void App_Main ()
 	HAL_UART_Receive_IT(&huart1, &data, 1);
 
  	dns_initialize();
-	lwip_init();
+	//lwip_init();
 	//MQTT_Client_Init(&MQTT_Cfg);
-	HTTP_Client_Init(&HTTP_Cfg);
+	//HTTP_Client_Init(&HTTP_Cfg);
+	GSM_File_Handler_Init(&GSM_File_Handler_Cfg);
 	DEBUG_INFO("Application started\r\n");
 	GMS_Hardware_Init();
 	//UART_SendData(USART1, bf_send, sizeof(bf_send));

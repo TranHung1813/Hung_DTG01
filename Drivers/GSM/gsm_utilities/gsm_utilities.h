@@ -17,6 +17,7 @@
 void GSM_Utilities_Get_IMEI(uint8_t *recv_Buffer, uint8_t* IMEI_Buffer, uint8_t Max_IMEI_Length);
 bool gsm_utilities_get_signal_strength_from_buffer(uint8_t *buffer, uint16_t *csq);
 uint16_t gsm_utilities_get_number_from_string(uint16_t begin_index, char *buffer);
+bool gsm_utilities_is_file_exist(char* FileName, char *buffer);
 
 void DEBUG_PrintResult_ATC(char* cmd, char* result);
 

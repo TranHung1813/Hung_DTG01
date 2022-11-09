@@ -1,4 +1,5 @@
 gsm_utilities.c:3:6:GSM_Utilities_Get_IMEI	32	static
 gsm_utilities.c:23:6:gsm_utilities_get_signal_strength_from_buffer	24	static
 gsm_utilities.c:40:10:gsm_utilities_get_number_from_string	32	static
-gsm_utilities.c:63:6:DEBUG_PrintResult_ATC	96	static
+gsm_utilities.c:67:6:gsm_utilities_is_file_exist	16	static
+gsm_utilities.c:72:6:DEBUG_PrintResult_ATC	96	static

@@ -27,6 +27,7 @@ RM := rm -rf
 -include Drivers/RingBuffer/subdir.mk
 -include Drivers/RTT_Debug/subdir.mk
 -include Drivers/GSM/gsm_utilities/subdir.mk
+-include Drivers/GSM/gsm_file_handler/subdir.mk
 -include Drivers/GSM/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk

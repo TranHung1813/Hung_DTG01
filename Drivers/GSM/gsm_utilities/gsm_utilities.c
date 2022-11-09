@@ -60,6 +60,15 @@ uint16_t gsm_utilities_get_number_from_string(uint16_t begin_index, char *buffer
 
     return value;
 }
+/*
+ * 	Ham kiem tra xem ten file co ton tai trong RespBuffer hay khong
+ *
+ */
+bool gsm_utilities_is_file_exist(char* FileName, char *buffer)
+{
+    return (strlen(FileName) && strlen(buffer) && strstr(buffer, FileName));
+}
+
 void DEBUG_PrintResult_ATC(char* cmd, char* result)
 {
     // In ket qua: "AT cmd: OK/FAIL " trong debug

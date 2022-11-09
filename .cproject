@@ -71,6 +71,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/mqtt_client}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/http_client}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/lwip-2.1.3/src/apps/http}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Hung_DTG01/Drivers/GSM/gsm_file_handler}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1964184240" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>

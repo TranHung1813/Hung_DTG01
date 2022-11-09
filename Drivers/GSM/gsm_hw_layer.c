@@ -188,6 +188,7 @@ void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd)
 	{
 		memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
 		m_gsm_atc.atc.Recv_Buffer.index = 0;
+		GSM_HwLayer_Reset_Rx_Buffer();
 		//HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 		GSM_UART_TX((uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 		return;
@@ -208,6 +209,7 @@ void GSM_SendCommand_AT (GSM_ATCommand_Table_TypDef AT_Cmd)
 
 	memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
 	m_gsm_atc.atc.Recv_Buffer.index = 0;
+	GSM_HwLayer_Reset_Rx_Buffer();
 	//HAL_UART_Transmit(&huart1, (uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 	GSM_UART_TX((uint8_t *)AT_Cmd.cmd, strlen(AT_Cmd.cmd), 200);
 
@@ -240,7 +242,7 @@ void GSM_HwLayer_Reset_Rx_Buffer(void)
 	memset(&m_gsm_atc.atc.Recv_Buffer.u8Buffer, 0, sizeof(m_gsm_atc.atc.Recv_Buffer.u8Buffer));
 	m_gsm_atc.atc.Recv_Buffer.index = 0;
 	memset(&m_gsm_modem_buffer, 0, sizeof(m_gsm_modem_buffer));
-	m_gsm_atc.atc.Retry_Count_atc = 0;
+	Erase_RingBuffer(&Rx_Buffer);
 }
 void GSM_HwLayer_Fill_Rx_Buffer(uint8_t* data, uint32_t length)
 {

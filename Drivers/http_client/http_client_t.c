@@ -27,6 +27,7 @@ void HTTP_Cleanup(void)
 err_t HTTP_Headers_Done_Callback(httpc_state_t *connection, void *arg, struct pbuf *hdr, u16_t hdr_len, u32_t content_len)
 {
     DEBUG_INFO("httpc_headers_callback, content length %d\r\n", content_len);
+    //DEBUG_INFO("HTTP header %.*s\r\n", hdr->len, hdr->payload);
 
     if (content_len == 0xFFFFFFFF)
     {
@@ -101,8 +102,8 @@ static err_t HTTP_File_Receive_Callback(void *arg, struct tcp_pcb *tpcb, struct 
         for (q = data_recv; q; q = q->next)
         {
             // Đây là dữ liệu nhận về, có độ dài bằng q->len, và data là q->payload
+            DEBUG_INFO("HTTP data length %u\r\n", q->len);
             DEBUG_INFO("HTTP data %.*s\r\n", q->len, q->payload);
-            DEBUG_INFO("HTTP data %s\r\n", q->payload);
         }
         tcp_recved(tpcb, data_recv->tot_len);
         pbuf_free(data_recv);
@@ -153,7 +154,7 @@ void HTTP_Get_Data(void)
 }
 void HTTP_Client_Polling_Task(void *arg)
 {
-    static uint32_t Last_time_get_data = 0, tick = 0;
+    //static uint32_t Last_time_get_data = 0, tick = 0;
     static uint32_t Last_Tick = 0;
     uint32_t Current_Tick = sys_get_tick_ms();
 
@@ -198,7 +199,7 @@ void HTTP_Client_Polling_Task(void *arg)
             break;
 
         case HTTP_STEP_CONNECTING:
-            tick = Current_Tick;
+            //tick = Current_Tick;
 
             HTTP_Get_Data();
             HTTP_Manager.Step = HTTP_STEP_CONNECTED;

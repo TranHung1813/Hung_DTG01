@@ -1,0 +1,6 @@
+gsm_file_handler.c:57:6:GSM_File_Handler_Init	40	static
+gsm_file_handler.c:74:6:GSM_FileSend_Handler	88	static
+gsm_file_handler.c:136:6:GSM_Login_Server_Seq	56	static
+gsm_file_handler.c:172:6:GSM_File_Transfer_Seq	56	static
+gsm_file_handler.c:212:6:GSM_Add_FileInfo_to_AT_Command	56	static
+gsm_file_handler.c:241:6:GSM_Send_File	40	static

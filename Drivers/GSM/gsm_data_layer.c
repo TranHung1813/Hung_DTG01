@@ -1,9 +1,10 @@
 # include "gsm.h"
+# include "gsm_file_handler.h"
 
 Gsm_Manager_TypDef GSM_Manager;
 static uint8_t GSM_IMEI_Buffer[20] = {0};
 static uint16_t GSM_Signal_Strength = 0;
-
+static GSM_Multi_FileSend_Info_TypDef Multi_FileSendCfg;
 // PPP
 /* The PPP IP interface */
 static struct netif m_ppp_netif;
@@ -14,8 +15,8 @@ static void ppp_link_status_cb(ppp_pcb *pcb, int err_code, void *ctx);
 static void ppp_notify_phase_cb(ppp_pcb *pcb, u8_t phase, void *ctx);
 static void open_ppp_stack(GSM_Response_Event_TypDef event, void *Resp_Buffer);
 static bool m_ppp_connected = false;
-
-const GSM_ATCommand_Table_TypDef atc_table_config_module[] =
+extern GSM_ATCommand_Table_TypDef ATC_Table_File_Tranfer[];
+const GSM_ATCommand_Table_TypDef ATC_Table_Config_Module[] =
 {
     {"ATV1\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 3000, 5, GSM_Config_Module}, // Set TA Response Format (OK/'0')
     {"ATE0\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 3000, 3, GSM_Config_Module}, //Disable ECHO
@@ -43,7 +44,7 @@ const GSM_ATCommand_Table_TypDef atc_table_config_module[] =
     {"AT\r\n", "OK\r\n", "OK\r\n", "ERROR", "", 3000, 5, GSM_Config_Module}, // AT Test
 
 };
-const GSM_ATCommand_Table_TypDef atc_table_open_ppp_stack[] =
+const GSM_ATCommand_Table_TypDef ATC_Table_open_ppp_stack[] =
 {
     {"ATV1\r\n", "OK\r\n", "", "ERROR", "", 1000, 5, open_ppp_stack},
     {"AT+CSQ\r\n", "OK\r\n", "", "ERROR", "", 1000, 2, open_ppp_stack}, //Get CSQ
@@ -55,25 +56,43 @@ const GSM_ATCommand_Table_TypDef atc_table_open_ppp_stack[] =
 void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
 {
     uint8_t TableIndex = GSM_Manager.step;
-    uint8_t TableSize = sizeof(atc_table_config_module)/sizeof(atc_table_config_module[0]);
+    const static uint8_t TableSize = sizeof(ATC_Table_Config_Module)/sizeof(ATC_Table_Config_Module[0]);
     if(TableIndex > TableSize)
     {
         return;
     }
-    DEBUG_PrintResult_ATC(atc_table_config_module[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
+    DEBUG_PrintResult_ATC(ATC_Table_Config_Module[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
     if(event == GSM_EVENT_OK)
     {
         if(TableIndex < TableSize)
         {
         	//HAL_Delay(2000);
-            GSM_SendCommand_AT(atc_table_config_module[TableIndex]);
+            GSM_SendCommand_AT(ATC_Table_Config_Module[TableIndex]);
         }
         else
         {
             // Da Config Module xong
             GSM_Manager.step = 0;
             DEBUG_INFO("Config module DONE.\r\n");
-            GSM_SendCommand_AT(atc_table_open_ppp_stack[0]);
+            //GSM_SendCommand_AT(ATC_Table_open_ppp_stack[0]);
+            /* Set up File Send*/
+            Multi_FileSendCfg.NumberFile = 3;
+            Multi_FileSendCfg.File[0].Name = "test1.txt";
+            Multi_FileSendCfg.File[0].Data = "\r\nHello World!!! File1\r\n";
+            Multi_FileSendCfg.File[0].DataLength = strlen(Multi_FileSendCfg.File[0].Data);
+            Multi_FileSendCfg.File[0].Directory = "/Test/";
+
+            Multi_FileSendCfg.File[1].Name = "test2.txt";
+            Multi_FileSendCfg.File[1].Data = "\r\nHello World!!! File2\r\n";
+            Multi_FileSendCfg.File[1].DataLength = strlen(Multi_FileSendCfg.File[1].Data);
+            Multi_FileSendCfg.File[1].Directory = "/Test/";
+
+            Multi_FileSendCfg.File[2].Name = "test3.txt";
+            Multi_FileSendCfg.File[2].Data = "\r\nHello World!!! File3\r\n";
+            Multi_FileSendCfg.File[2].DataLength = strlen(Multi_FileSendCfg.File[2].Data);
+            Multi_FileSendCfg.File[2].Directory = "/Test/";
+
+            GSM_Send_File(&Multi_FileSendCfg);
         }
         GSM_Manager.step++;
     }
@@ -86,17 +105,17 @@ void open_ppp_stack(GSM_Response_Event_TypDef event, void *Resp_Buffer)
 {
     DEBUG_INFO("Open PPP stack step %d\r\n", GSM_Manager.step);
     uint8_t TableIndex = GSM_Manager.step;
-    uint8_t TableSize = sizeof(atc_table_open_ppp_stack)/sizeof(atc_table_open_ppp_stack[0]);
+    const static uint8_t TableSize = sizeof(ATC_Table_open_ppp_stack)/sizeof(ATC_Table_open_ppp_stack[0]);
     if(TableIndex > TableSize)
     {
         return;
     }
-    DEBUG_PrintResult_ATC(atc_table_open_ppp_stack[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
+    DEBUG_PrintResult_ATC(ATC_Table_open_ppp_stack[TableIndex-1].cmd, (event == GSM_EVENT_OK)?"[OK]":"[FAIL]");
     if(event == GSM_EVENT_OK)
     {
         if(TableIndex < TableSize)
         {
-            GSM_SendCommand_AT(atc_table_open_ppp_stack[TableIndex]);
+            GSM_SendCommand_AT(ATC_Table_open_ppp_stack[TableIndex]);
         }
         else
         {
@@ -416,7 +435,7 @@ void Polling_GSM_StateMachine (void)
                 if(GSM_Manager.step == 0)
                 {
                     GSM_Manager.step = 1;
-                    GSM_SendCommand_AT(atc_table_config_module[0]);
+                    GSM_SendCommand_AT(ATC_Table_Config_Module[0]);
                 }
                 break;
             case GSM_STATE_OK:
@@ -473,7 +492,7 @@ void GSM_Manager_ChangeState(Gsm_State_TypDef state)
             m_ppp_connected = false;
             GSM_Manager_ChangeInternetMode(GSM_INTERNET_MODE_AT_STACK);
             GSM_HwLayer_Reset_Rx_Buffer(); // Reset USART RX buffer
-            GSM_SendCommand_AT(atc_table_open_ppp_stack[0]);
+            GSM_SendCommand_AT(ATC_Table_open_ppp_stack[0]);
         }
         break;
     default:

@@ -155,8 +155,8 @@
 //#define SLIP_DEBUG                  LWIP_DBG_OFF
 //#define DHCP_DEBUG                  LWIP_DBG_OFF
 #define SYS_LIGHTWEIGHT_PROT        0
-//#define HTTPC_DEBUG                 LWIP_DBG_OFF
-//#define HTTPC_DEBUG_REQUEST         LWIP_DBG_OFF
+#define HTTPC_DEBUG                 LWIP_DBG_ON
+#define HTTPC_DEBUG_REQUEST         LWIP_DBG_OFF
 
 /*DEBUG MACRO*/
 #define DHCP_DEBUG LWIP_DBG_OFF

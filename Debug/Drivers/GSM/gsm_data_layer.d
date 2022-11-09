@@ -81,7 +81,8 @@ Drivers/GSM/gsm_data_layer.o: ../Drivers/GSM/gsm_data_layer.c \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/init.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/sntp.h \
  C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/sntp_opts.h \
- C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/prot/iana.h
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/prot/iana.h \
+ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm_file_handler/gsm_file_handler.h
 
 ../Drivers/GSM/gsm.h:
 
@@ -250,3 +251,5 @@ C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/apps/sntp_opts.h:
 
 C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/lwip-2.1.3/src/include/lwip/prot/iana.h:
+
+C:/Users/Administrator/Desktop/Stm32\ Projects/Hung_DTG01_Git/Drivers/GSM/gsm_file_handler/gsm_file_handler.h:
