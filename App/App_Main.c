@@ -45,10 +45,10 @@ void App_Main ()
 	HAL_UART_Receive_IT(&huart1, &data, 1);
 
  	dns_initialize();
-	//lwip_init();
+	lwip_init();
 	//MQTT_Client_Init(&MQTT_Cfg);
-	//HTTP_Client_Init(&HTTP_Cfg);
-	GSM_File_Handler_Init(&GSM_File_Handler_Cfg);
+	HTTP_Client_Init(&HTTP_Cfg);
+	//GSM_File_Handler_Init(&GSM_File_Handler_Cfg);
 	DEBUG_INFO("Application started\r\n");
 	GMS_Hardware_Init();
 	//UART_SendData(USART1, bf_send, sizeof(bf_send));

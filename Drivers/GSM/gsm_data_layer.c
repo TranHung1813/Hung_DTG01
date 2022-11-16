@@ -75,7 +75,7 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
             // Da Config Module xong
             GSM_Manager.step = 0;
             DEBUG_INFO("Config module DONE.\r\n");
-            //GSM_SendCommand_AT(ATC_Table_open_ppp_stack[0]);
+            GSM_SendCommand_AT(ATC_Table_open_ppp_stack[0]);
             /* Set up File Send*/
             Multi_FileSendCfg.NumberFile = 3;
             Multi_FileSendCfg.File[0].Name = "test6.txt";
@@ -93,7 +93,7 @@ void GSM_Config_Module (GSM_Response_Event_TypDef event, void *Resp_Buffer)
             Multi_FileSendCfg.File[2].DataLength = strlen(Multi_FileSendCfg.File[2].Data);
             Multi_FileSendCfg.File[2].Directory = "/Test/";
 
-            GSM_Send_File(&Multi_FileSendCfg);
+            //GSM_Send_File(&Multi_FileSendCfg);
             FileDownload_Cfg.Name = "Readme.txt";
             FileDownload_Cfg.Directory = "/Test/";
             //GSM_Download_File(&FileDownload_Cfg);
